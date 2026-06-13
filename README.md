@@ -43,8 +43,10 @@ index.html  ← TODO: HTML + CSS + JS vanilla en un solo archivo
 
 ## Despliegue
 
-Hosting estático en **Cloudflare Pages**. Conecta el repo en *Workers & Pages → Create → Pages → Connect to Git*, sin build command y con *build output directory* en `/`. Cada `git push` a `main` redespliega solo. La config también está en `wrangler.toml` (para deploy por CLI con `npx wrangler pages deploy`).
+Hosting estático en **Cloudflare Pages**. Conecta el repo en *Workers & Pages → Create → Pages → Connect to Git*, **Framework preset: None**, **sin build command** y con **build output directory en `/`**. Cada `git push` a `main` redespliega solo.
 
+> ⚠️ No agregar `wrangler.toml`: hace que Cloudflare trate el repo como un Worker (`wrangler deploy`) y el build falla. Es un sitio estático puro.
+>
 > Sirve igual en cualquier hosting estático (Vercel, GitHub Pages): importar el repo, sin build, publicar la raíz.
 
 Para Google Drive: crea un Client ID OAuth (cuenta personal, consentimiento Externo, Drive API habilitada) y pégalo en Más → Conectar Google Drive. La URL de la app debe estar en "Orígenes de JavaScript autorizados".

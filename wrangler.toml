@@ -1,9 +1,0 @@
-# Configuración de Cloudflare Pages para Olla.
-# App estática de un solo archivo: sin build, se publica la raíz del repo.
-#
-# Deploy por CLI (opcional):  npx wrangler pages deploy
-# Deploy automático: conecta el repo en dash.cloudflare.com → Workers & Pages.
-
-name = "olla"
-pages_build_output_dir = "."
-compatibility_date = "2026-06-12"
