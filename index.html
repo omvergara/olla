@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com https://apis.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://www.googleapis.com https://accounts.google.com https://oauth2.googleapis.com https://content.googleapis.com; frame-src https://accounts.google.com https://content.googleapis.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Olla">
+<meta name="theme-color" content="#ff7043">
+<title>Olla — Recetas simples</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#f6f5f2;--card:#fff;--bdr:#e7e5e0;--t1:#1f1d1a;--t2:#7a766e;--t3:#b3aea4;
+  --org:#ff7043;--obg:#fff0eb;--ot:#bf360c;
+  --grn:#43a047;--gbg:#e8f5e9;--gt:#1b5e20;
+  --amb:#fb8c00;--abg:#fff8e1;--at:#e65100;
+  --gray:#efece7;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;font-size:15px;padding-bottom:76px}
+.hdr{background:var(--card);border-bottom:0.5px solid var(--bdr);padding:14px 16px 12px;position:sticky;top:0;z-index:100}
+.hdr-row{display:flex;justify-content:space-between;align-items:center}
+.app-ttl{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.app-ttl .em{font-size:20px}
+.hdr-sub{font-size:12px;color:var(--t2);margin-top:1px}
+.search{margin-top:10px;display:flex;align-items:center;gap:8px;background:var(--gray);border-radius:12px;padding:9px 12px}
+.search input{flex:1;border:none;background:none;font-size:15px;color:var(--t1);outline:none}
+.chips{display:flex;gap:7px;overflow-x:auto;padding:10px 16px 2px;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;padding:6px 13px;border-radius:20px;font-size:13px;border:0.5px solid var(--bdr);background:var(--card);cursor:pointer;color:var(--t2);font-weight:500;white-space:nowrap}
+.chip.on{background:var(--org);color:#fff;border-color:var(--org)}
+.content{padding:8px 16px}
+.rcard{background:var(--card);border-radius:16px;border:0.5px solid var(--bdr);overflow:hidden;margin-bottom:10px;cursor:pointer;display:flex;align-items:stretch}
+.rcard-em{width:72px;background:var(--obg);display:flex;align-items:center;justify-content:center;font-size:34px;flex-shrink:0}
+.rcard-bd{padding:11px 13px;flex:1;min-width:0}
+.rcard-nm{font-size:16px;font-weight:700;display:flex;align-items:center;gap:6px}
+.rcard-nm .star{color:var(--amb);font-size:13px}
+.rcard-meta{font-size:12px;color:var(--t2);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap}
+.rcard-cost{font-size:15px;font-weight:700;color:var(--grn);margin-top:5px}
+.rcard-cost small{font-size:11px;color:var(--t3);font-weight:500}
+.empty{text-align:center;color:var(--t3);font-size:14px;padding:40px 20px}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:0.5px solid var(--bdr);display:flex;z-index:200;padding-bottom:env(safe-area-inset-bottom,0px)}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px 7px;border:none;background:none;cursor:pointer;color:var(--t3);font-size:10px;position:relative}
+.nb.on{color:var(--org)}
+.ni{font-size:21px;line-height:1}
+.nbdg{position:absolute;top:5px;right:calc(50% - 18px);background:var(--org);color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:none;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--card)}
+.fab{position:fixed;right:18px;bottom:86px;z-index:150;border:none;width:56px;height:56px;border-radius:50%;font-size:28px;cursor:pointer;color:#fff;background:var(--org);box-shadow:0 4px 16px rgba(255,112,67,.45);display:flex;align-items:center;justify-content:center}
+.shdr{display:flex;justify-content:space-between;align-items:center;margin:14px 2px 8px}
+.sttl{font-size:12px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
+/* Overlay */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.ov.open{display:flex}
+.sheet{background:var(--bg);width:100%;max-width:520px;max-height:94vh;border-radius:20px 20px 0 0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.sheet-hd{position:sticky;top:0;background:var(--bg);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--bdr);z-index:2}
+.sheet-hd h2{font-size:18px;font-weight:700}
+.x{background:var(--gray);border:none;width:30px;height:30px;border-radius:50%;font-size:17px;cursor:pointer;color:var(--t2);line-height:1}
+.sheet-bd{padding:16px}
+.det-hero{background:var(--obg);border-radius:16px;padding:18px;text-align:center;margin-bottom:14px}
+.det-em{font-size:56px}
+.det-nm{font-size:21px;font-weight:800;margin-top:4px}
+.det-meta{font-size:13px;color:var(--ot);margin-top:6px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.det-cost{display:flex;gap:10px;margin-bottom:14px}
+.cost-box{flex:1;background:var(--card);border:0.5px solid var(--bdr);border-radius:14px;padding:12px;text-align:center}
+.cost-box .l{font-size:11px;color:var(--t2)}
+.cost-box .v{font-size:19px;font-weight:800;color:var(--grn);margin-top:2px}
+.ing-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:0.5px solid var(--bdr)}
+.ing-row:last-child{border-bottom:none}
+.ing-n{flex:1;font-size:14px;font-weight:500}
+.ing-q{font-size:12px;color:var(--t2)}
+.ing-c{font-size:13px;color:var(--t2);min-width:64px;text-align:right}
+.step{display:flex;gap:10px;padding:8px 0;align-items:flex-start}
+.step-n{width:24px;height:24px;border-radius:50%;background:var(--org);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-t{font-size:14px;line-height:1.5;flex:1;padding-top:2px}
+.card{background:var(--card);border:0.5px solid var(--bdr);border-radius:16px;padding:14px;margin-bottom:12px}
+label{display:block;font-size:12px;font-weight:600;color:var(--t2);margin:10px 0 5px}
+input[type=text],input[type=number],textarea,select{width:100%;border:0.5px solid var(--bdr);border-radius:10px;padding:11px;font-size:15px;color:var(--t1);background:var(--card);font-family:inherit}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--org)}
+textarea{resize:vertical;min-height:60px}
+.btn{width:100%;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;background:var(--org);color:#fff;margin-top:8px}
+.btn.sec{background:var(--gray);color:var(--t1)}
+.btn.danger{background:var(--obg);color:var(--ot)}
+.ing-edit{display:flex;gap:6px;margin-bottom:6px}
+.ing-edit input{padding:8px}
+.ing-edit .in-n{flex:2}.ing-edit .in-q{flex:1}.ing-edit .in-c{flex:1}
+.ing-edit button{background:var(--obg);color:var(--ot);border:none;border-radius:8px;width:34px;flex-shrink:0;font-size:18px;cursor:pointer}
+.addline{background:none;border:1px dashed var(--bdr);border-radius:10px;padding:9px;width:100%;color:var(--org);font-weight:600;cursor:pointer;font-size:13px;margin-top:4px}
+.pantry-grp{margin-bottom:14px}
+.pantry-cat{font-size:12px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.4px;margin:0 2px 7px}
+.pantry-items{display:flex;flex-wrap:wrap;gap:7px}
+.ping{padding:8px 13px;border-radius:20px;font-size:13px;border:0.5px solid var(--bdr);background:var(--card);cursor:pointer;color:var(--t2)}
+.ping.on{background:var(--grn);color:#fff;border-color:var(--grn)}
+.match-bar{height:6px;background:var(--gray);border-radius:3px;overflow:hidden;margin-top:6px}
+.match-fill{height:6px;border-radius:3px}
+.falta{font-size:11px;color:var(--at);margin-top:4px}
+.selbox{width:26px;height:26px;border-radius:7px;border:1.5px solid var(--t3);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none}
+.selbox.on{background:var(--org);border-color:var(--org);color:#fff}
+.set-row{background:var(--card);border:0.5px solid var(--bdr);border-radius:14px;padding:13px 14px;display:flex;align-items:center;gap:12px;margin-bottom:9px;cursor:pointer}
+.set-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;background:var(--obg)}
+.set-inf{flex:1;min-width:0}
+.set-ttl{font-size:15px;font-weight:600}
+.set-sub{font-size:12px;color:var(--t2);margin-top:1px}
+.set-arr{color:var(--t3);font-size:20px}
+.tip{background:var(--obg);color:var(--ot);border-radius:12px;padding:11px 13px;font-size:13px;line-height:1.45;margin-bottom:10px;display:flex;gap:9px}
+.totbar{position:sticky;bottom:0;background:var(--card);border-top:0.5px solid var(--bdr);padding:12px 16px;display:flex;align-items:center;gap:12px;margin:0 -16px -16px}
+.totbar .t{flex:1}.totbar .tl{font-size:11px;color:var(--t2)}.totbar .tv{font-size:18px;font-weight:800;color:var(--grn)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<nav class="bnav">
+  <button class="nb" id="nav-recetas" onclick="goTo('recetas')"><span class="ni">🍲</span>Recetas</button>
+  <button class="nb" id="nav-cocinar" onclick="goTo('cocinar')"><span class="ni">🧑‍🍳</span>Cocinar</button>
+  <button class="nb" id="nav-mercado" onclick="goTo('mercado')"><span class="ni">🛒</span><span class="nbdg" id="bdg-m"></span>Mercado</button>
+  <button class="nb" id="nav-mas" onclick="goTo('mas')"><span class="ni">⚙️</span>Más</button>
+</nav>
+
+<div class="ov" id="ov-det"><div class="sheet"><div class="sheet-hd"><h2 id="det-title">Receta</h2><button class="x" onclick="closeOv('ov-det')">✕</button></div><div class="sheet-bd" id="det-body"></div></div></div>
+<div class="ov" id="ov-edit"><div class="sheet"><div class="sheet-hd"><h2 id="edit-title">Nueva receta</h2><button class="x" onclick="closeOv('ov-edit')">✕</button></div><div class="sheet-bd" id="edit-body"></div></div></div>
+<div class="ov" id="ov-confirm"><div class="sheet" style="max-width:340px;border-radius:20px;margin:auto 16px"><div class="sheet-bd" style="text-align:center"><div id="cf-t" style="font-size:17px;font-weight:700;margin-bottom:6px"></div><div id="cf-s" style="font-size:14px;color:var(--t2);margin-bottom:16px"></div><button class="btn danger" id="cf-ok">Confirmar</button><button class="btn sec" onclick="closeOv('ov-confirm')">Cancelar</button></div></div></div>
+
+<script>
+const PFX='olla_';
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function fmt(n){return '$'+Math.round(n||0).toLocaleString('es-CO');}
+
+// ── Categorías ────────────────────────────────────────────
+const CATS=[
+  {k:'Desayuno',i:'🍳'},{k:'Almuerzo',i:'🍲'},{k:'Cena',i:'🌙'},
+  {k:'Sopa',i:'🥣'},{k:'Onces',i:'☕'},{k:'Postre',i:'🍮'}
+];
+function catIco(k){const c=CATS.find(x=>x.k===k);return c?c.i:'🍴';}
+
+// ── Recetas precargadas (económicas, Colombia) ────────────
+const DEFAULT_RECIPES=[
+  {id:'r_pericos',emoji:'🍳',name:'Huevos pericos',cat:'Desayuno',serv:2,min:10,fav:false,
+   ing:[{n:'Huevos',q:'3 unidades',c:1500},{n:'Tomate',q:'1 unidad',c:500},{n:'Cebolla larga',q:'1 rama',c:300},{n:'Aceite',q:'1 cda',c:200},{n:'Sal',q:'al gusto',c:50}],
+   steps:['Pica el tomate y la cebolla finos.','Sofríe la cebolla y el tomate en el aceite 3 min.','Bate los huevos con sal y agrégalos.','Revuelve a fuego medio hasta cuajar. Sirve caliente.']},
+  {id:'r_arepa',emoji:'🫓',name:'Arepa con queso',cat:'Desayuno',serv:2,min:15,fav:false,
+   ing:[{n:'Masa de maíz',q:'1 taza',c:1500},{n:'Queso campesino',q:'100 g',c:2000},{n:'Sal',q:'1 pizca',c:50},{n:'Agua tibia',q:'1/2 taza',c:0}],
+   steps:['Mezcla la masa con sal y agua hasta formar una masa suave.','Arma bolitas y aplánalas; rellena con queso.','Asa en plancha o sartén 5 min por lado hasta dorar.']},
+  {id:'r_avena',emoji:'🥣',name:'Avena caliente',cat:'Desayuno',serv:2,min:8,fav:false,
+   ing:[{n:'Avena en hojuelas',q:'1 taza',c:800},{n:'Leche',q:'2 tazas',c:1500},{n:'Panela o azúcar',q:'2 cdas',c:300},{n:'Canela',q:'1 pizca',c:100}],
+   steps:['Calienta la leche con la canela.','Agrega la avena y la panela.','Cocina revolviendo 5 min hasta espesar. Sirve caliente.']},
+  {id:'r_arroz',emoji:'🍚',name:'Arroz blanco',cat:'Almuerzo',serv:4,min:20,fav:false,
+   ing:[{n:'Arroz',q:'2 tazas',c:1600},{n:'Agua',q:'4 tazas',c:0},{n:'Aceite',q:'1 cda',c:200},{n:'Sal',q:'1 cdta',c:50}],
+   steps:['Sofríe el arroz en el aceite 1 min.','Agrega agua caliente y sal.','Tapa y cocina a fuego bajo 18 min hasta secar.']},
+  {id:'r_lentejas',emoji:'🫘',name:'Lentejas guisadas',cat:'Almuerzo',serv:4,min:40,fav:false,
+   ing:[{n:'Lentejas',q:'2 tazas',c:2500},{n:'Cebolla',q:'1/2 unidad',c:300},{n:'Tomate',q:'1 unidad',c:500},{n:'Ajo',q:'2 dientes',c:200},{n:'Aceite',q:'2 cdas',c:300},{n:'Sal',q:'al gusto',c:50}],
+   steps:['Remoja las lentejas 30 min (opcional) y cocínalas en agua 25 min.','Aparte sofríe cebolla, tomate y ajo.','Agrega el sofrito a las lentejas, sazona y cocina 10 min más.']},
+  {id:'r_pasta_atun',emoji:'🍝',name:'Pasta con atún',cat:'Almuerzo',serv:3,min:20,fav:false,
+   ing:[{n:'Pasta',q:'250 g',c:2000},{n:'Atún en lata',q:'1 lata',c:4000},{n:'Tomate',q:'1 unidad',c:500},{n:'Cebolla',q:'1/2 unidad',c:300},{n:'Aceite',q:'1 cda',c:200},{n:'Sal',q:'al gusto',c:50}],
+   steps:['Cocina la pasta en agua con sal 10 min; escurre.','Sofríe cebolla y tomate; agrega el atún escurrido.','Mezcla con la pasta y sirve.']},
+  {id:'r_frijoles',emoji:'🍲',name:'Fríjoles',cat:'Almuerzo',serv:5,min:60,fav:false,
+   ing:[{n:'Fríjol',q:'2 tazas',c:3000},{n:'Plátano',q:'1 unidad',c:800},{n:'Cebolla',q:'1/2 unidad',c:300},{n:'Ajo',q:'2 dientes',c:200},{n:'Sal',q:'al gusto',c:50}],
+   steps:['Remoja el fríjol la noche anterior.','Cocina en olla con el plátano picado 50 min.','Agrega sofrito de cebolla y ajo; sazona y cocina 10 min más.']},
+  {id:'r_sopa_verd',emoji:'🥣',name:'Sopa de verduras',cat:'Sopa',serv:4,min:35,fav:false,
+   ing:[{n:'Papa',q:'3 unidades',c:1000},{n:'Zanahoria',q:'1 unidad',c:600},{n:'Arveja',q:'1 taza',c:800},{n:'Cebolla',q:'1/2 unidad',c:300},{n:'Cilantro',q:'al gusto',c:300},{n:'Sal',q:'al gusto',c:50}],
+   steps:['Pica todas las verduras.','Hierve en 6 tazas de agua con sal 25 min.','Agrega cilantro al final y sirve.']},
+  {id:'r_caldo_papa',emoji:'🍲',name:'Caldo de papa con huevo',cat:'Sopa',serv:2,min:20,fav:false,
+   ing:[{n:'Papa',q:'3 unidades',c:1000},{n:'Huevos',q:'2 unidades',c:1000},{n:'Cebolla larga',q:'1 rama',c:300},{n:'Cilantro',q:'al gusto',c:300},{n:'Sal',q:'al gusto',c:50}],
+   steps:['Hierve la papa picada con cebolla y sal en 4 tazas de agua 15 min.','Agrega los huevos enteros y cocina 4 min.','Sirve con cilantro fresco.']},
+  {id:'r_patacon',emoji:'🍌',name:'Patacones',cat:'Onces',serv:3,min:15,fav:false,
+   ing:[{n:'Plátano verde',q:'2 unidades',c:1600},{n:'Aceite',q:'para freír',c:500},{n:'Sal',q:'al gusto',c:50}],
+   steps:['Pela y corta el plátano en trozos.','Fríe 3 min, aplánalos y vuelve a freír hasta dorar.','Escurre, agrega sal y sirve.']},
+  {id:'r_arroz_huevo',emoji:'🍳',name:'Arroz con huevo',cat:'Almuerzo',serv:1,min:10,fav:false,
+   ing:[{n:'Arroz cocido',q:'1 taza',c:800},{n:'Huevo',q:'1 unidad',c:500},{n:'Aceite',q:'1 cda',c:200},{n:'Sal',q:'al gusto',c:50}],
+   steps:['Fríe el huevo en aceite caliente.','Sirve el arroz y pon el huevo encima. Sal al gusto.']},
+  {id:'r_spaghetti',emoji:'🍝',name:'Spaghetti a la boloñesa',cat:'Almuerzo',serv:4,min:30,fav:false,
+   ing:[{n:'Pasta',q:'400 g',c:2500},{n:'Carne molida',q:'300 g',c:6000},{n:'Tomate',q:'2 unidades',c:1000},{n:'Cebolla',q:'1/2 unidad',c:300},{n:'Ajo',q:'2 dientes',c:200},{n:'Sal',q:'al gusto',c:50}],
+   steps:['Sofríe cebolla y ajo; agrega la carne hasta dorar.','Añade tomate picado y cocina 10 min.','Cocina la pasta aparte, escurre y mezcla con la salsa.']}
+];
+
+// ── Storage ───────────────────────────────────────────────
+function gR(){const r=localStorage.getItem(PFX+'recipes');return r?JSON.parse(r):DEFAULT_RECIPES.map(x=>({...x,ing:x.ing.map(i=>({...i})),steps:[...x.steps]}));}
+function sR(arr){localStorage.setItem(PFX+'recipes',JSON.stringify(arr));autoSync();}
+function gPantry(){const r=localStorage.getItem(PFX+'pantry');return r?JSON.parse(r):[];}
+function sPantry(a){localStorage.setItem(PFX+'pantry',JSON.stringify(a));autoSync();}
+
+function recipeCost(r){return (r.ing||[]).reduce((s,i)=>s+(+i.c||0),0);}
+function recipeCostServ(r){const c=recipeCost(r);return r.serv>0?c/r.serv:c;}
+
+// ── Estado de navegación / filtros ────────────────────────
+let curScreen='recetas';
+let filterCat='';        // '' = todas
+let filterFav=false;
+let searchTxt='';
+let selRecipes=new Set();// para lista de mercado
+let editId=null;
+let editIngs=[];
+
+function goTo(s){curScreen=s;renderAll();}
+function openOv(id){document.getElementById(id).classList.add('open');}
+function closeOv(id){document.getElementById(id).classList.remove('open');}
+let _ccb=null;
+function showConfirm(t,s,cb){document.getElementById('cf-t').textContent=t;document.getElementById('cf-s').textContent=s;_ccb=cb;document.getElementById('cf-ok').onclick=()=>{closeOv('ov-confirm');if(_ccb)_ccb();};openOv('ov-confirm');}
+
+function renderAll(){
+  ['recetas','cocinar','mercado','mas'].forEach(s=>{const el=document.getElementById('nav-'+s);if(el)el.classList.toggle('on',curScreen===s);});
+  const m=document.getElementById('bdg-m');if(m){m.textContent=selRecipes.size;m.style.display=selRecipes.size>0?'flex':'none';}
+  const app=document.getElementById('app');
+  if(curScreen==='recetas')rRecetas(app);
+  else if(curScreen==='cocinar')rCocinar(app);
+  else if(curScreen==='mercado')rMercado(app);
+  else rMas(app);
+}
+
+// ── PANTALLA: RECETAS ─────────────────────────────────────
+function rRecetas(app){
+  let recipes=gR();
+  const q=searchTxt.trim().toLowerCase();
+  let list=recipes.filter(r=>{
+    if(filterCat && r.cat!==filterCat)return false;
+    if(filterFav && !r.fav)return false;
+    if(q && !r.name.toLowerCase().includes(q) && !(r.ing||[]).some(i=>i.n.toLowerCase().includes(q)))return false;
+    return true;
+  });
+  const chips=`<div class="chips"><button class="chip ${!filterCat&&!filterFav?'on':''}" onclick="filterCat='';filterFav=false;renderAll()">Todas</button>`+
+    `<button class="chip ${filterFav?'on':''}" onclick="filterFav=!filterFav;renderAll()">⭐ Favoritas</button>`+
+    CATS.map(c=>`<button class="chip ${filterCat===c.k?'on':''}" onclick="filterCat=filterCat==='${c.k}'?'':'${c.k}';filterFav=false;renderAll()">${c.i} ${c.k}</button>`).join('')+`</div>`;
+  const cards=list.length?list.map(r=>{
+    const cs=recipeCostServ(r);
+    return `<div class="rcard" onclick="openDetail('${r.id}')">
+      <div class="rcard-em">${r.emoji||'🍴'}</div>
+      <div class="rcard-bd">
+        <div class="rcard-nm">${esc(r.name)}${r.fav?'<span class="star">★</span>':''}</div>
+        <div class="rcard-meta"><span>${catIco(r.cat)} ${esc(r.cat)}</span><span>⏱ ${r.min} min</span><span>🍽 ${r.serv} porc.</span></div>
+        <div class="rcard-cost">${fmt(cs)} <small>/ porción · ${fmt(recipeCost(r))} total</small></div>
+      </div></div>`;}).join(''):`<div class="empty">No hay recetas que coincidan.<br>Usa el botón + para crear una.</div>`;
+  app.innerHTML=`<div class="hdr"><div class="hdr-row"><div><div class="app-ttl">🍲 Olla</div><div class="hdr-sub">${recipes.length} recetas · toca para ver</div></div></div>
+    <div class="search">🔎<input type="text" id="srch" placeholder="Buscar receta o ingrediente..." value="${esc(searchTxt)}"></div></div>
+    ${chips}<div class="content">${cards}</div>`;
+  const fab=document.createElement('button');fab.className='fab';fab.id='fab';fab.textContent='＋';fab.onclick=()=>openEdit(null);document.body.appendChild(fab);
+  const si=document.getElementById('srch');si.addEventListener('input',e=>{searchTxt=e.target.value;const c=document.getElementById('app').querySelector('.content');refreshCards(c);});
+}
+function refreshCards(){renderCardsOnly();}
+function renderCardsOnly(){
+  // re-render solo el listado sin perder foco del buscador
+  const recipes=gR();const q=searchTxt.trim().toLowerCase();
+  let list=recipes.filter(r=>{if(filterCat&&r.cat!==filterCat)return false;if(filterFav&&!r.fav)return false;if(q&&!r.name.toLowerCase().includes(q)&&!(r.ing||[]).some(i=>i.n.toLowerCase().includes(q)))return false;return true;});
+  const c=document.querySelector('.content');if(!c)return;
+  c.innerHTML=list.length?list.map(r=>{const cs=recipeCostServ(r);return `<div class="rcard" onclick="openDetail('${r.id}')"><div class="rcard-em">${r.emoji||'🍴'}</div><div class="rcard-bd"><div class="rcard-nm">${esc(r.name)}${r.fav?'<span class="star">★</span>':''}</div><div class="rcard-meta"><span>${catIco(r.cat)} ${esc(r.cat)}</span><span>⏱ ${r.min} min</span><span>🍽 ${r.serv} porc.</span></div><div class="rcard-cost">${fmt(cs)} <small>/ porción · ${fmt(recipeCost(r))} total</small></div></div></div>`;}).join(''):`<div class="empty">No hay recetas que coincidan.</div>`;
+}
+
+// ── DETALLE ───────────────────────────────────────────────
+function openDetail(id){
+  const r=gR().find(x=>x.id===id);if(!r)return;
+  document.getElementById('det-title').textContent=r.name;
+  const ings=(r.ing||[]).map(i=>`<div class="ing-row"><span class="ing-n">${esc(i.n)}</span><span class="ing-q">${esc(i.q)}</span><span class="ing-c">${i.c?fmt(i.c):'—'}</span></div>`).join('');
+  const steps=(r.steps||[]).map((s,idx)=>`<div class="step"><div class="step-n">${idx+1}</div><div class="step-t">${esc(s)}</div></div>`).join('');
+  document.getElementById('det-body').innerHTML=`
+    <div class="det-hero"><div class="det-em">${r.emoji||'🍴'}</div><div class="det-nm">${esc(r.name)}</div>
+      <div class="det-meta"><span>${catIco(r.cat)} ${esc(r.cat)}</span><span>⏱ ${r.min} min</span><span>🍽 ${r.serv} porc.</span></div></div>
+    <div class="det-cost"><div class="cost-box"><div class="l">Costo total</div><div class="v">${fmt(recipeCost(r))}</div></div><div class="cost-box"><div class="l">Por porción</div><div class="v">${fmt(recipeCostServ(r))}</div></div></div>
+    <button class="btn ${r.fav?'':'sec'}" onclick="toggleFav('${r.id}')">${r.fav?'★ Quitar de favoritas':'☆ Marcar favorita'}</button>
+    <div class="shdr"><span class="sttl">Ingredientes</span></div><div class="card" style="padding:6px 14px">${ings||'<div class="ing-row">Sin ingredientes</div>'}</div>
+    <div class="shdr"><span class="sttl">Preparación</span></div><div class="card">${steps||'Sin pasos'}</div>
+    <button class="btn sec" onclick="openEdit('${r.id}')">✏️ Editar receta</button>
+    <button class="btn danger" onclick="delRecipe('${r.id}')">🗑 Eliminar</button>`;
+  openOv('ov-det');
+}
+function toggleFav(id){const a=gR();const r=a.find(x=>x.id===id);if(r){r.fav=!r.fav;sR(a);openDetail(id);renderAll();}}
+function delRecipe(id){const r=gR().find(x=>x.id===id);showConfirm('¿Eliminar receta?','Se borrará "'+(r?r.name:'')+'" de tu recetario.',()=>{sR(gR().filter(x=>x.id!==id));selRecipes.delete(id);closeOv('ov-det');renderAll();});}
+
+// ── CREAR / EDITAR ────────────────────────────────────────
+function openEdit(id){
+  editId=id;
+  const r=id?gR().find(x=>x.id===id):null;
+  editIngs=r?r.ing.map(i=>({...i})):[{n:'',q:'',c:''}];
+  document.getElementById('edit-title').textContent=id?'Editar receta':'Nueva receta';
+  const catOpts=CATS.map(c=>`<option value="${c.k}" ${r&&r.cat===c.k?'selected':''}>${c.i} ${c.k}</option>`).join('');
+  document.getElementById('edit-body').innerHTML=`
+    <label>Emoji</label><input type="text" id="e-emoji" maxlength="2" value="${r?esc(r.emoji):'🍴'}" style="width:70px;text-align:center;font-size:22px">
+    <label>Nombre</label><input type="text" id="e-name" placeholder="Ej: Arroz con pollo" value="${r?esc(r.name):''}">
+    <label>Categoría</label><select id="e-cat">${catOpts}</select>
+    <div style="display:flex;gap:10px"><div style="flex:1"><label>Porciones</label><input type="number" id="e-serv" inputmode="numeric" value="${r?r.serv:2}"></div><div style="flex:1"><label>Minutos</label><input type="number" id="e-min" inputmode="numeric" value="${r?r.min:15}"></div></div>
+    <label>Ingredientes <span style="font-weight:400;color:var(--t3)">(nombre · cantidad · costo $)</span></label>
+    <div id="ing-list"></div>
+    <button class="addline" onclick="addIngLine()">+ Agregar ingrediente</button>
+    <label style="margin-top:14px">Preparación (un paso por línea)</label>
+    <textarea id="e-steps" rows="6" placeholder="Pica la cebolla...&#10;Sofríe 3 minutos...">${r?esc((r.steps||[]).join('\n')):''}</textarea>
+    <button class="btn" onclick="saveRecipe()">💾 Guardar receta</button>`;
+  renderIngEdit();
+  openOv('ov-edit');
+}
+function renderIngEdit(){
+  const el=document.getElementById('ing-list');if(!el)return;
+  el.innerHTML=editIngs.map((i,idx)=>`<div class="ing-edit"><input class="in-n" type="text" placeholder="Ingrediente" value="${esc(i.n)}" oninput="editIngs[${idx}].n=this.value"><input class="in-q" type="text" placeholder="Cant." value="${esc(i.q)}" oninput="editIngs[${idx}].q=this.value"><input class="in-c" type="number" inputmode="numeric" placeholder="$" value="${i.c===''?'':esc(i.c)}" oninput="editIngs[${idx}].c=this.value"><button onclick="delIngLine(${idx})">×</button></div>`).join('');
+}
+function addIngLine(){editIngs.push({n:'',q:'',c:''});renderIngEdit();}
+function delIngLine(idx){editIngs.splice(idx,1);if(!editIngs.length)editIngs.push({n:'',q:'',c:''});renderIngEdit();}
+function saveRecipe(){
+  const name=document.getElementById('e-name').value.trim();
+  if(!name){alert('Ponle un nombre a la receta.');return;}
+  const rec={
+    id:editId||('u_'+Date.now()),
+    emoji:document.getElementById('e-emoji').value.trim()||'🍴',
+    name,
+    cat:document.getElementById('e-cat').value,
+    serv:parseInt(document.getElementById('e-serv').value)||1,
+    min:parseInt(document.getElementById('e-min').value)||0,
+    ing:editIngs.filter(i=>i.n.trim()).map(i=>({n:i.n.trim(),q:(i.q||'').trim(),c:parseInt(i.c)||0})),
+    steps:document.getElementById('e-steps').value.split('\n').map(s=>s.trim()).filter(Boolean),
+    fav:false
+  };
+  const a=gR();const ex=a.findIndex(x=>x.id===rec.id);
+  if(ex>=0){rec.fav=a[ex].fav;a[ex]=rec;}else a.unshift(rec);
+  sR(a);closeOv('ov-edit');closeOv('ov-det');renderAll();
+}
+
+// ── PANTALLA: COCINAR (qué cocino con lo que tengo) ───────
+function allIngredientNames(){
+  const set=new Set();gR().forEach(r=>(r.ing||[]).forEach(i=>{if(i.n.trim())set.add(i.n.trim());}));
+  return [...set].sort((a,b)=>a.localeCompare(b,'es'));
+}
+function rCocinar(app){
+  const pantry=gPantry();const pset=new Set(pantry.map(x=>x.toLowerCase()));
+  const names=allIngredientNames();
+  const pills=names.map(n=>`<button class="ping ${pset.has(n.toLowerCase())?'on':''}" onclick="togglePantry('${esc(n).replace(/'/g,"\\'")}')">${esc(n)}</button>`).join('');
+  // matching
+  const matches=gR().map(r=>{
+    const ing=(r.ing||[]).map(i=>i.n.toLowerCase());
+    const have=ing.filter(n=>pset.has(n));
+    const falta=(r.ing||[]).filter(i=>!pset.has(i.n.toLowerCase())).map(i=>i.n);
+    return {r,pct:ing.length?Math.round(have.length/ing.length*100):0,falta};
+  }).filter(m=>m.pct>0).sort((a,b)=>b.pct-a.pct);
+  const matchHtml=pantry.length? (matches.length?matches.map(m=>{
+    const col=m.pct===100?'var(--grn)':m.pct>=60?'var(--amb)':'var(--t3)';
+    return `<div class="rcard" onclick="openDetail('${m.r.id}')"><div class="rcard-em">${m.r.emoji}</div><div class="rcard-bd"><div class="rcard-nm">${esc(m.r.name)}</div><div class="match-bar"><div class="match-fill" style="width:${m.pct}%;background:${col}"></div></div><div class="rcard-meta" style="margin-top:5px"><span style="color:${col};font-weight:600">${m.pct===100?'✅ Puedes hacerla':m.pct+'% — tienes lo básico'}</span></div>${m.falta.length&&m.pct<100?`<div class="falta">Te falta: ${esc(m.falta.slice(0,4).join(', '))}${m.falta.length>4?'…':''}</div>`:''}</div></div>`;
+  }).join(''):'<div class="empty">Nada coincide aún. Marca más ingredientes.</div>') : '<div class="tip">👆 Marca arriba los ingredientes que tienes en casa y te muestro qué puedes cocinar.</div>';
+  app.innerHTML=`<div class="hdr"><div class="hdr-row"><div><div class="app-ttl">🧑‍🍳 ¿Qué cocino?</div><div class="hdr-sub">${pantry.length} ingredientes en tu cocina</div></div>${pantry.length?'<button class="chip" onclick="clearPantry()">Limpiar</button>':''}</div></div>
+    <div class="content"><div class="shdr"><span class="sttl">Lo que tengo en casa</span></div><div class="pantry-items">${pills||'<div class="empty">Aún no hay ingredientes en tus recetas.</div>'}</div>
+    <div class="shdr"><span class="sttl">Puedes cocinar</span></div>${matchHtml}</div>`;
+  const f=document.getElementById('fab');if(f)f.remove();
+}
+function togglePantry(n){const a=gPantry();const i=a.findIndex(x=>x.toLowerCase()===n.toLowerCase());if(i>=0)a.splice(i,1);else a.push(n);sPantry(a);renderAll();}
+function clearPantry(){showConfirm('¿Limpiar cocina?','Se desmarcan todos los ingredientes.',()=>{sPantry([]);renderAll();});}
+
+// ── PANTALLA: MERCADO (lista desde recetas elegidas) ──────
+function rMercado(app){
+  const recipes=gR();
+  const cards=recipes.map(r=>{
+    const on=selRecipes.has(r.id);
+    return `<div class="rcard" style="cursor:default"><div class="selbox ${on?'on':''}" onclick="toggleSel('${r.id}')">${on?'✓':''}</div><div class="rcard-bd" onclick="toggleSel('${r.id}')"><div class="rcard-nm">${r.emoji} ${esc(r.name)}</div><div class="rcard-meta"><span>${fmt(recipeCost(r))} · ${r.serv} porc.</span></div></div></div>`;
+  }).join('');
+  // lista combinada
+  let listHtml='',total=0;
+  if(selRecipes.size){
+    const agg={};
+    recipes.filter(r=>selRecipes.has(r.id)).forEach(r=>(r.ing||[]).forEach(i=>{
+      const k=i.n.toLowerCase();if(!agg[k])agg[k]={n:i.n,qs:[],c:0};agg[k].qs.push(i.q);agg[k].c+=(+i.c||0);total+=(+i.c||0);
+    }));
+    const items=Object.values(agg).sort((a,b)=>a.n.localeCompare(b.n,'es'));
+    listHtml=`<div class="shdr"><span class="sttl">Lista de mercado (${items.length})</span></div><div class="card" style="padding:6px 14px">`+
+      items.map(it=>`<div class="ing-row"><span class="ing-n">${esc(it.n)}</span><span class="ing-q">${esc(it.qs.filter(Boolean).join(' + '))}</span><span class="ing-c">${it.c?fmt(it.c):'—'}</span></div>`).join('')+`</div>`;
+  }
+  app.innerHTML=`<div class="hdr"><div class="hdr-row"><div><div class="app-ttl">🛒 Mercado</div><div class="hdr-sub">Elige recetas y arma la lista</div></div>${selRecipes.size?'<button class="chip" onclick="clearSel()">Limpiar</button>':''}</div></div>
+    <div class="content">${listHtml}<div class="shdr"><span class="sttl">Elegir recetas</span></div>${cards}
+    ${selRecipes.size?`<div class="totbar"><div class="t"><div class="tl">Costo estimado total</div><div class="tv">${fmt(total)}</div></div></div>`:''}</div>`;
+  const f=document.getElementById('fab');if(f)f.remove();
+}
+function toggleSel(id){if(selRecipes.has(id))selRecipes.delete(id);else selRecipes.add(id);renderAll();}
+function clearSel(){selRecipes.clear();renderAll();}
+
+// ── PANTALLA: MÁS / AJUSTES ───────────────────────────────
+function rMas(app){
+  const driveId=getDriveClientId();const driveOk=isDriveConnected();
+  app.innerHTML=`<div class="hdr"><div class="hdr-row"><div><div class="app-ttl">⚙️ Más</div><div class="hdr-sub">Respaldo y datos</div></div></div></div>
+  <div class="content">
+    <div class="shdr"><span class="sttl">Respaldo</span></div>
+    <div class="set-row" onclick="exportJSON()"><div class="set-ico">📦</div><div class="set-inf"><div class="set-ttl">Exportar respaldo</div><div class="set-sub">Descarga tus recetas en un archivo JSON.</div></div><span class="set-arr">↓</span></div>
+    <div class="set-row" onclick="document.getElementById('imp-file').click()"><div class="set-ico">📥</div><div class="set-inf"><div class="set-ttl">Importar respaldo</div><div class="set-sub">Restaura desde un archivo JSON.</div></div><span class="set-arr">›</span></div>
+    <input type="file" id="imp-file" accept="application/json" style="display:none" onchange="importFile(event)">
+    <div class="shdr"><span class="sttl">Google Drive</span></div>
+    <div class="set-row" onclick="${driveId?'authDrive()':'connectDrivePrompt()'}"><div class="set-ico" style="background:${driveOk?'var(--gbg)':'var(--gray)'}">${driveOk?'✅':'☁️'}</div><div class="set-inf"><div class="set-ttl">${driveId?'Drive configurado':'Conectar Google Drive'}</div><div class="set-sub">${driveId?'Toca para re-autorizar (token 1h).':'Respaldo automático en tu nube.'}</div></div><span class="set-arr">›</span></div>
+    ${driveId?`<div class="set-row" onclick="syncNow()"><div class="set-ico">🔄</div><div class="set-inf"><div class="set-ttl">Sincronizar ahora</div></div><span class="set-arr">›</span></div><div class="set-row" onclick="restoreFromDrive()"><div class="set-ico">⬇️</div><div class="set-inf"><div class="set-ttl">Restaurar desde Drive</div><div class="set-sub">Trae tu último respaldo.</div></div><span class="set-arr">›</span></div>`:''}
+    <div class="shdr"><span class="sttl">Recetas</span></div>
+    <div class="set-row" onclick="resetRecipes()"><div class="set-ico">↺</div><div class="set-inf"><div class="set-ttl">Restaurar recetas de ejemplo</div><div class="set-sub">Vuelve a cargar el recetario inicial (no borra las tuyas nuevas con id u_).</div></div><span class="set-arr">›</span></div>
+    <div class="shdr"><span class="sttl">Info</span></div>
+    <div class="set-row" style="cursor:default"><div class="set-ico">🍲</div><div class="set-inf"><div class="set-ttl">Olla v1</div><div class="set-sub">Recetas simples y económicas. Datos en tu dispositivo.</div><div class="set-sub" style="margin-top:3px">Hecho por <b>Mauricio Vergara</b> · Bogotá–COL</div></div></div>
+    <div class="set-row" onclick="window.open('https://github.com/omvergara/olla/issues','_blank')"><div class="set-ico">💬</div><div class="set-inf"><div class="set-ttl">Reportar un problema</div><div class="set-sub">Issues del repo en GitHub.</div></div><span class="set-arr">›</span></div>
+  </div>`;
+  const f=document.getElementById('fab');if(f)f.remove();
+}
+function resetRecipes(){showConfirm('¿Restaurar recetas de ejemplo?','Se vuelven a agregar las recetas iniciales. Tus recetas creadas se conservan.',()=>{
+  const mine=gR().filter(r=>r.id.startsWith('u_'));
+  const base=DEFAULT_RECIPES.map(x=>({...x,ing:x.ing.map(i=>({...i})),steps:[...x.steps]}));
+  sR([...mine,...base]);renderAll();alert('✅ Recetas de ejemplo restauradas.');});}
+
+// ── Backup JSON ───────────────────────────────────────────
+function getAllData(){const all={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(PFX))all[k]=localStorage.getItem(k);}return all;}
+function applyBackupObject(obj){if(!obj||typeof obj!=='object')return 0;let n=0;Object.keys(obj).forEach(k=>{if(k.startsWith(PFX)){const v=obj[k];localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v));n++;}});return n;}
+function exportJSON(){const blob=new Blob([JSON.stringify(getAllData(),null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='olla_respaldo.json';a.click();URL.revokeObjectURL(url);}
+function importFile(e){const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=ev=>{try{const n=applyBackupObject(JSON.parse(ev.target.result));if(!n){alert('El archivo no tiene datos de Olla.');return;}alert('✅ Restaurados '+n+' datos. La app se recargará.');location.reload();}catch(err){alert('JSON inválido.');}};rd.readAsText(f);}
+
+// ── Google Drive (opcional) ───────────────────────────────
+let driveToken=null,driveFileId=localStorage.getItem(PFX+'drive_fid')||null,tokenClient=null;
+function getDriveClientId(){return localStorage.getItem(PFX+'drive_cid')||'';}
+function isDriveConnected(){return !!driveToken;}
+function connectDrivePrompt(){const cid=prompt('Pega tu Client ID de Google OAuth:');if(cid&&cid.trim()){localStorage.setItem(PFX+'drive_cid',cid.trim());authDrive();}}
+function authDrive(){const cid=getDriveClientId();if(!cid)return;if(!window.google||!google.accounts){alert('Librería de Google cargando, espera 2s.');return;}tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:'https://www.googleapis.com/auth/drive.file',callback:(resp)=>{if(resp.access_token){driveToken=resp.access_token;autoSync();renderAll();alert('✅ Drive conectado.');}}});tokenClient.requestAccessToken();}
+async function autoSync(){if(!driveToken)return;const payload=JSON.stringify(getAllData());try{if(driveFileId){await fetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,{method:'PATCH',headers:{'Authorization':'Bearer '+driveToken,'Content-Type':'application/json'},body:payload});}else{const meta=await fetch('https://www.googleapis.com/drive/v3/files',{method:'POST',headers:{'Authorization':'Bearer '+driveToken,'Content-Type':'application/json'},body:JSON.stringify({name:'olla_backup.json',mimeType:'application/json'})}).then(r=>r.json());if(meta.id){driveFileId=meta.id;localStorage.setItem(PFX+'drive_fid',meta.id);await fetch(`https://www.googleapis.com/upload/drive/v3/files/${meta.id}?uploadType=media`,{method:'PATCH',headers:{'Authorization':'Bearer '+driveToken,'Content-Type':'application/json'},body:payload});}}}catch(e){console.log('sync err',e);}}
+async function syncNow(){if(!driveToken){authDrive();return;}await autoSync();alert('✅ Sincronizado.');}
+function startDriveRestore(){const cid=getDriveClientId();if(!cid){alert('Conecta Google Drive primero.');return;}if(!window.google||!google.accounts){alert('Librería de Google cargando, espera 2s.');return;}const tc=google.accounts.oauth2.initTokenClient({client_id:cid,scope:'https://www.googleapis.com/auth/drive.file',callback:(resp)=>{if(resp.access_token){driveToken=resp.access_token;doRestoreFromDrive();}}});tc.requestAccessToken();}
+async function doRestoreFromDrive(){try{let fid=driveFileId;if(!fid){const q=encodeURIComponent("name='olla_backup.json' and trashed=false");const list=await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=${encodeURIComponent('files(id,modifiedTime)')}&orderBy=${encodeURIComponent('modifiedTime desc')}`,{headers:{'Authorization':'Bearer '+driveToken}}).then(r=>r.json());if(list.files&&list.files.length){fid=list.files[0].id;driveFileId=fid;localStorage.setItem(PFX+'drive_fid',fid);}}if(!fid){alert('No se encontró respaldo en tu Drive.');return;}const content=await fetch(`https://www.googleapis.com/drive/v3/files/${fid}?alt=media`,{headers:{'Authorization':'Bearer '+driveToken}}).then(r=>r.json());const n=applyBackupObject(content);if(!n){alert('El respaldo está vacío.');return;}alert('✅ Restaurados '+n+' datos. La app se recargará.');location.reload();}catch(e){alert('Error al restaurar. Revisa tu conexión.');console.log('restore err',e);}}
+function restoreFromDrive(){if(!getDriveClientId()){alert('Conecta Google Drive primero.');return;}showConfirm('¿Restaurar desde Drive?','Se reemplazan tus datos con el último respaldo en la nube.',startDriveRestore);}
+
+renderAll();
+</script>
+</body>
+</html>
