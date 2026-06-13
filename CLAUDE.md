@@ -4,7 +4,7 @@
 PWA de **recetas económicas** en UN SOLO archivo (`index.html`). HTML + CSS + JS vanilla, cero build, cero dependencias. App hermana de "Cartera" (finanzas), misma filosofía y autor (Mauricio Vergara).
 
 - **Repo:** https://github.com/omvergara/olla (público)
-- **Deploy:** Netlify (auto-deploy en push a main)
+- **Deploy:** Cloudflare Pages (auto-deploy en push a main; config en `wrangler.toml`)
 
 ## Arquitectura crítica
 - El código es 100% genérico — las recetas precargadas (`DEFAULT_RECIPES`) son contenido genérico, NO datos personales.
