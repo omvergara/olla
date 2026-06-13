@@ -23,16 +23,21 @@
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;font-size:15px;padding-bottom:78px}
 /* Header con marca siempre presente */
 .hdr{background:var(--card);border-bottom:0.5px solid var(--bdr);padding:12px 16px 11px;position:sticky;top:0;z-index:100}
-.brand{display:flex;align-items:center;gap:7px}
+.brand{display:flex;align-items:center;justify-content:space-between;width:100%}
+.brand-wrapper{display:flex;align-items:center;gap:7px}
 .brand-logo{font-size:20px}
 .brand-name{font-size:17px;font-weight:800;letter-spacing:-.3px}
-.brand-tag{font-size:11px;color:var(--t3);font-weight:500}
+/* Modificaciones de estilo solicitadas para el subtítulo */
+.brand-tag{font-size:11px;color:var(--t2);font-weight:500;text-transform:capitalize;display:inline-block;margin-top:2px}
+.brand-book{font-size:17px;margin-left:auto}
 .scr-ttl{font-size:20px;font-weight:800;margin-top:8px;letter-spacing:-.4px}
 .scr-sub{font-size:12px;color:var(--t2);margin-top:1px}
 .search{margin-top:10px;display:flex;align-items:center;gap:8px;background:var(--gray);border-radius:12px;padding:9px 12px}
 .search input{flex:1;border:none;background:none;font-size:15px;color:var(--t1);outline:none}
-.chips{display:flex;flex-wrap:wrap;gap:7px;padding:10px 16px 2px}
-.chip{padding:6px 12px;border-radius:18px;font-size:13px;border:0.5px solid var(--bdr);background:var(--card);cursor:pointer;color:var(--t2);font-weight:500;white-space:nowrap}
+/* Chips con barra movible horizontal */
+.chips{display:flex;flex-wrap:nowrap;gap:7px;padding:10px 16px 6px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+.chip{padding:6px 12px;border-radius:18px;font-size:13px;border:0.5px solid var(--bdr);background:var(--card);cursor:pointer;color:var(--t2);font-weight:500;white-space:nowrap;flex-shrink:0}
 .chip.on{background:var(--org);color:#fff;border-color:var(--org)}
 .content{padding:8px 16px}
 .intro{background:linear-gradient(135deg,#fff4ef,#ffe9e0);border:0.5px solid #ffd9c9;border-radius:16px;padding:14px 15px;margin:10px 0 4px;position:relative}
@@ -109,9 +114,11 @@ textarea{resize:vertical;min-height:60px}
 .match-fill{height:6px;border-radius:3px}
 .falta{font-size:11px;color:var(--at);margin-top:4px}
 .cook-sum{background:var(--gbg);border-radius:14px;padding:13px 15px;font-size:14px;color:var(--gt);font-weight:600;margin-bottom:6px;text-align:center}
-/* Mercado row arreglado: checkbox dentro de la tarjeta */
-.mrow{background:var(--card);border:0.5px solid var(--bdr);border-radius:14px;padding:11px 13px;display:flex;align-items:center;gap:11px;margin-bottom:8px;cursor:pointer}
-.mrow.sel{border-color:var(--org);background:var(--obg)}
+/* Mercado row y desglose interno */
+.mrow{background:var(--card);border:0.5px solid var(--bdr);border-radius:14px;padding:11px 13px;display:flex;align-items:center;gap:11px;cursor:pointer}
+.mrow-container{margin-bottom:8px}
+.mrow.sel{border-color:var(--org);background:var(--obg);border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom:none}
+.m-desglose{background:var(--card);border:0.5px solid var(--bdr);border-top:none;border-bottom-left-radius:14px;border-bottom-right-radius:14px;padding:6px 14px 11px 46px;margin-top:0}
 .selbox{width:24px;height:24px;border-radius:7px;border:1.5px solid var(--t3);flex-shrink:0;display:flex;align-items:center;justify-content:center;background:none;font-size:14px;color:#fff}
 .mrow.sel .selbox{background:var(--org);border-color:var(--org)}
 .mrow-em{font-size:24px;flex-shrink:0}
@@ -139,8 +146,8 @@ textarea{resize:vertical;min-height:60px}
   <button class="nb" id="nav-mas" onclick="goTo('mas')"><span class="ni">⚙️</span>Más</button>
 </nav>
 
-<div class="ov" id="ov-det"><div class="topbar"><button class="back" onclick="closeOv('ov-det')">‹ Volver</button><div class="wm"><span class="lg">🍲</span> Olla</div></div><div class="ov-bd" id="det-body"></div></div>
-<div class="ov" id="ov-edit"><div class="topbar"><button class="back" onclick="closeOv('ov-edit')">‹ Volver</button><div class="wm"><span class="lg">🍲</span> Olla</div></div><div class="ov-bd" id="edit-body"></div></div>
+<div class="ov" id="ov-det"><div class="topbar"><button class="back" onclick="closeOv('ov-det')">‹ Volver</button><div class="wm">Olla</div></div><div class="ov-bd" id="det-body"></div></div>
+<div class="ov" id="ov-edit"><div class="topbar"><button class="back" onclick="closeOv('ov-edit')">‹ Volver</button><div class="wm">Olla</div></div><div class="ov-bd" id="edit-body"></div></div>
 <div class="ov" id="ov-confirm" style="background:rgba(0,0,0,.45);justify-content:center"><div style="margin:auto;background:var(--bg);max-width:340px;width:90%;border-radius:18px;padding:20px;text-align:center"><div id="cf-t" style="font-size:17px;font-weight:700;margin-bottom:6px"></div><div id="cf-s" style="font-size:14px;color:var(--t2);margin-bottom:16px"></div><button class="btn danger" id="cf-ok">Confirmar</button><button class="btn sec" onclick="closeOv('ov-confirm')">Cancelar</button></div></div>
 
 <script>
@@ -161,9 +168,25 @@ function catIco(k){return catObj(k).i;}
 function timeIco(k){return catObj(k).time;}
 const DIF=['','Fácil','Medio','Avanzado'];
 
-// ── Recetas precargadas (estructuradas, con tips y bebida) ─
+// ── Recetas precargadas ─
 const DEFAULT_RECIPES=[
- // ── DESAYUNOS (de más elaborado a más simple) ──
+ // ── DESAYUNOS ──
+ {id:'r_tor_jamon',emoji:'🍳',name:'Tortilla con jamón y lechuga',cat:'Desayuno',serv:1,min:10,dif:1,fav:false,bebida:'Jugo de naranja',
+  ing:[{n:'Huevos',q:'2',c:1000},{n:'Jamón en lonjas',q:'2',c:1200},{n:'Lechuga',q:'2 hojas',c:200},{n:'Mantequilla',q:'1 cdta',c:150},{n:'Sal',q:'al gusto',c:50}],
+  steps:['Bate los huevos con la sal.','En una sartén con mantequilla a fuego medio, vierte los huevos y coloca las lonjas de jamón encima antes de que cuaje por completo.','Cuando la base esté firme, dale la vuelta, cocina 1 min más, retira y dobla colocando la lechuga fresca en el centro.'],
+  tip:'Lava bien la lechuga y sécala antes de ponerla para que la tortilla no quede aguada.'},
+ {id:'r_arepas_queso',emoji:'🫓',name:'Arepas con queso',cat:'Desayuno',serv:2,min:15,dif:1,fav:false,bebida:'Café caliente',
+  ing:[{n:'Harina de maíz',q:'1 taza',c:800},{n:'Agua tibia',q:'1 taza',c:0},{n:'Queso campesino o mozzarella',q:'100 g',c:2500},{n:'Mantequilla',q:'1 cda',c:300},{n:'Sal',q:'1 cdta',c:50}],
+  steps:['En un bol mezcla el agua, la sal y la mitad de la mantequilla. Agrega la harina poco a poco y amasa hasta que esté suave.','Suma la mitad del queso rallado a la masa y forma las arepas.','Ásalas en un sartén o budare caliente 4-5 min por lado. Ábrelas caliente y ponles el resto del queso para que derrita.'],
+  tip:'Si la masa se agrieta al armar la arepa, le falta un tris de agua tibia.'},
+ {id:'r_arepas_dulces',emoji:'🫓',name:'Arepas dulces fritas',cat:'Desayuno',serv:2,min:20,dif:2,fav:false,bebida:'Agua de panela',
+  ing:[{n:'Harina de maíz',q:'1 taza',c:800},{n:'Agua tibia',q:'1 taza',c:0},{n:'Panela raspada o azúcar',q:'3 cdas',c:400},{n:'Semillas de anís (opcional)',q:'1 cdta',c:200},{n:'Mantequilla',q:'1 cda',c:300},{n:'Aceite para freír',q:'1 taza',c:1200},{n:'Sal',q:'1 pizca',c:20}],
+  steps:['Disuelve la panela raspada en el agua tibia con la pizca de sal.','Añade la harina de maíz, las semillas de anís y la mantequilla derretida. Amasa muy bien.','Arma arepitas delgadas (haciendo un huequito pequeño en el centro si deseas).','Fríelas en aceite bien caliente hasta que se inflen y estén doraditas.'],
+  tip:'El aceite debe estar caliente pero no humeante, o quedarán crudas por dentro.'},
+ {id:'r_arepas_asadas',emoji:'🫓',name:'Arepas asadas tradicionales',cat:'Desayuno',serv:2,min:15,dif:1,fav:false,bebida:'Chocolate caliente',
+  ing:[{n:'Harina de maíz',q:'1 taza',c:800},{n:'Agua tibia',q:'1 taza',c:0},{n:'Sal',q:'1 cdta',c:50}],
+  steps:['Mezcla el agua tibia con la sal en un recipiente.','Agrega la harina de maíz gradualmente, incorporando con las manos hasta lograr una masa homogénea que no se pegue.','Arma bolas medianas y aplánalas dándoles forma circular.','Llévalas a una sartén caliente sin grasa y ásalas 5 min por cada lado hasta que doren.'],
+  tip:'Sabrás que están listas cuando al darles un pequeño golpe en el centro suenen huecas.'},
  {id:'r_rancheros',emoji:'🍳',name:'Huevos rancheros',cat:'Desayuno',serv:2,min:25,dif:3,fav:false,bebida:'Café con leche',
   ing:[{n:'Huevos',q:'2',c:1000},{n:'Arepa o tortilla',q:'2',c:1500},{n:'Tomate',q:'2',c:1000},{n:'Cebolla',q:'1/2',c:300},{n:'Fríjoles refritos',q:'1/2 taza',c:1000},{n:'Aceite',q:'1 cda',c:200},{n:'Sal',q:'al gusto',c:50}],
   steps:['Pica el tomate y la cebolla bien finos.','En aceite a fuego MEDIO sofríe la cebolla 2 min (sin dorar de más), agrega el tomate y cocina 5 min hasta una salsa.','Aparte fríe los huevos a fuego medio dejando la yema blanda.','Calienta la arepa, ponle los fríjoles, encima el huevo y báñalo con la salsa.'],
@@ -194,16 +217,23 @@ const DEFAULT_RECIPES=[
   tip:'Fuego bajo y movimiento constante = huevos cremosos. Retira antes de que se vean totalmente secos.'},
 
  // ── ALMUERZOS ──
+ {id:'r_pasta_tomate',emoji:'🍝',name:'Pasta con tomate casera',cat:'Almuerzo',serv:4,min:25,dif:1,fav:false,
+  ing:[{n:'Pasta',q:'400 g',c:2500},{n:'Tomate maduro',q:'4',c:2000},{n:'Cebolla',q:'1/2',c:300},{n:'Ajo',q:'2 dientes',c:200},{n:'Aceite',q:'2 cdas',c:300},{n:'Sal y albahaca',q:'al gusto',c:150}],
+  steps:['Hierve abundante agua con sal y cocina la pasta según el paquete (8-10 min). Luego escúrrela.','Pica fino o licúa los tomates. Sofríe la cebolla y el ajo en aceite por 3 min.','Agrega el tomate y cocina a fuego bajo por 12 min hasta que espese la salsa. Sazona con sal y albahaca.','Integra la pasta cocida con la salsa caliente y sirve.'],
+  tip:'Si notas la salsa de tomate muy ácida, añádele una pizca pequeñita de azúcar.'},
+ {id:'r_pasta_bolonesa',emoji:'🍝',name:'Pasta a la boloñesa',cat:'Almuerzo',serv:4,min:35,dif:2,fav:false,
+  ing:[{n:'Pasta',q:'400 g',c:2500},{n:'Carne molida',q:'300 g',c:6000},{n:'Tomate licuado',q:'2 tazas',c:2000},{n:'Cebolla picada',q:'1/2',c:300},{n:'Ajo',q:'2 dientes',c:200},{n:'Aceite',q:'2 cdas',c:300},{n:'Sal y pimienta',q:'al gusto',c:100}],
+  steps:['Cocina la pasta en agua hirviendo con sal y escúrrela.','En una sartén grande dora el ajo y la cebolla. Añade la carne molida, salpimiéntala y cocínala rompiendo los grumos.','Cuando la carne esté cocida, vierte el tomate licuado y reduce a fuego bajo durante 15 min.','Mezcla todo con la pasta.'],
+  tip:'Un chorrito de leche al final de la salsa suaviza los sabores de la carne.'},
+ {id:'r_pasta_pollo',emoji:'🍝',name:'Pasta con pollo',cat:'Almuerzo',serv:4,min:30,dif:2,fav:false,
+  ing:[{n:'Pasta',q:'400 g',c:2500},{n:'Pechuga de pollo en cubos',q:'300 g',c:5000},{n:'Crema de leche',q:'1 taza',c:2500},{n:'Cebolla',q:'1/2',c:300},{n:'Mantequilla',q:'1 cda',c:300},{n:'Sal y pimienta',q:'al gusto',c:100}],
+  steps:['Cocina y escurre la pasta.','Sazona los cubos de pollo con sal y pimienta. En una sartén, derrite la mantequilla y sella el pollo a fuego alto hasta que dore.','Baja el fuego, agrega la cebolla picada fina y cocina 3 min. Vierte la crema de leche y deja espesar.','Vierte la pasta en la sartén y revuelve bien.'],
+  tip:'Agrega un poquito de queso rallado encima para realzar la cremosidad.'},
  {id:'r_arroz',emoji:'🍚',name:'Arroz',cat:'Almuerzo',serv:4,min:20,dif:1,fav:false,
   ing:[{n:'Arroz',q:'2 tazas',c:1600},{n:'Agua',q:'4 tazas',c:0},{n:'Aceite',q:'1 cda',c:200},{n:'Sal',q:'1 cdta',c:50}],
   steps:['Sofríe el arroz en el aceite con la sal 1 min revolviendo.','Agrega el agua CALIENTE (4 tazas por 2 de arroz).','Cuando seque la superficie, tapa y cocina a fuego BAJO 15 min. No destapes antes.'],
   tip:'La regla es doble agua que arroz. Si destapas antes de tiempo queda crudo o se pega.',
   variaciones:['Con zanahoria: sofríe 1 zanahoria rallada junto con el arroz antes del agua.','Con fideos: dora 1/4 taza de fideos en el aceite hasta marrón, luego agrega el arroz.','Con cilantro y cebolla: añade cebolla picada al sofrito y cilantro al final.']},
- {id:'r_pasta',emoji:'🍝',name:'Pasta',cat:'Almuerzo',serv:4,min:25,dif:2,fav:false,
-  ing:[{n:'Pasta',q:'400 g',c:2500},{n:'Tomate',q:'2',c:1000},{n:'Cebolla',q:'1/2',c:300},{n:'Ajo',q:'2 dientes',c:200},{n:'Aceite',q:'2 cdas',c:300},{n:'Sal',q:'al gusto',c:50}],
-  steps:['Hierve abundante agua con sal; cocina la pasta el tiempo del paquete (8-10 min) y escúrrela.','Aparte sofríe ajo y cebolla, agrega tomate picado y cocina 8 min para la salsa.','Mezcla la pasta con la salsa y sirve.'],
-  tip:'No pongas la pasta antes de que el agua hierva fuerte, o queda pegajosa. Reserva un poco del agua de cocción para soltar la salsa.',
-  variaciones:['Boloñesa: dora 300 g de carne molida con el sofrito antes del tomate (+$6000).','Con atún: agrega 1 lata de atún escurrido a la salsa (+$4000).','Ajo y aceite: omite el tomate; saltea la pasta en aceite con ajo dorado y perejil.']},
  {id:'r_costillas',emoji:'🍖',name:'Costillas BBQ',cat:'Almuerzo',serv:4,min:60,dif:3,fav:false,
   ing:[{n:'Costilla de cerdo',q:'1 kg',c:14000},{n:'Salsa BBQ',q:'1/2 taza',c:3000},{n:'Panela o miel',q:'2 cdas',c:300},{n:'Ajo',q:'2 dientes',c:200},{n:'Sal y pimienta',q:'al gusto',c:100}],
   steps:['Sazona la costilla con sal, pimienta y ajo; déjala 15 min.','Hornéala tapada con papel aluminio a 180°C por 40 min (o cocina en olla tapada 40 min).','Destapa, úntala con la salsa BBQ mezclada con la panela y hornea 15 min más hasta caramelizar.'],
@@ -219,7 +249,7 @@ const DEFAULT_RECIPES=[
  {id:'r_pechuga',emoji:'🍗',name:'Pechuga a la plancha',cat:'Almuerzo',serv:2,min:18,dif:1,fav:false,
   ing:[{n:'Pechuga de pollo',q:'2',c:6000},{n:'Limón',q:'1',c:400},{n:'Ajo',q:'1 diente',c:100},{n:'Aceite',q:'1 cda',c:200},{n:'Sal y pimienta',q:'al gusto',c:100}],
   steps:['Adoba la pechuga con limón, ajo, sal y pimienta 10 min.','Calienta la plancha o sartén a fuego medio-alto con un toque de aceite.','Cocina 5-6 min por lado hasta dorar y que no quede rosada por dentro.'],
-  tip:'Si la pechuga es gruesa, ábrela como libro para que se cocine parejo y no quede cruda en el centro.'},
+  tip:'Si la pechuga es gruesa, ábrela como libro para que se cocine parejo y no quede crudo en el centro.'},
  {id:'r_lentejas',emoji:'🫘',name:'Lentejas cremosas',cat:'Almuerzo',serv:4,min:40,dif:1,fav:false,
   ing:[{n:'Lentejas',q:'2 tazas',c:2500},{n:'Cebolla',q:'1/2',c:300},{n:'Tomate',q:'1',c:500},{n:'Ajo',q:'2 dientes',c:200},{n:'Papa',q:'1',c:400},{n:'Aceite',q:'2 cdas',c:300},{n:'Sal',q:'al gusto',c:50}],
   steps:['Cocina las lentejas con la papa en cubos en agua que las cubra, 25 min.','Aparte sofríe cebolla, ajo y tomate; agrégalo a las lentejas.','Cocina 10 min más; aplasta un poco la papa para dar cremosidad y sazona.'],
@@ -242,14 +272,14 @@ const DEFAULT_RECIPES=[
   steps:['Corta todas las verduras en tamaño parejo.','Saltea en sartén caliente con poco aceite, primero las más duras (zanahoria) y luego las demás.','Cocina 6-8 min moviendo; deben quedar crocantes, no blandas. Sazona al final.'],
   tip:'Fuego alto y movimiento: si las dejas quietas se cuecen en su agua y quedan aguadas en vez de salteadas.'},
 
- // ── CENAS (ligeras, para dormir bien) ──
+ // ── CENAS ──
  {id:'r_cremaauyama',emoji:'🎃',name:'Crema de auyama',cat:'Cena',serv:4,min:30,dif:2,fav:false,
   ing:[{n:'Auyama (calabaza)',q:'500 g',c:2500},{n:'Cebolla',q:'1/2',c:300},{n:'Ajo',q:'1 diente',c:100},{n:'Caldo o agua',q:'3 tazas',c:0},{n:'Sal y pimienta',q:'al gusto',c:100}],
   steps:['Cocina la auyama en cubos con cebolla y ajo en el caldo 20 min hasta ablandar.','Licúa todo hasta una crema suave.','Regresa a la olla, sazona y calienta. Sirve.'],
   tip:'Cena liviana ideal para la noche. Si la quieres más cremosa, agrega un chorrito de leche al licuar.'},
  {id:'r_pechugahorno',emoji:'🍗',name:'Pechuga al horno con verduras',cat:'Cena',serv:2,min:35,dif:2,fav:false,
-  ing:[{n:'Pechuga de pollo',q:'2',c:6000},{n:'Zucchini o zanahoria',q:'1',c:700},{n:'Pimentón',q:'1',c:800},{n:'Cebolla',q:'1',c:600},{n:'Aceite de oliva',q:'1 cda',c:400},{n:'Sal, pimienta, hierbas',q:'al gusto',c:100}],
-  steps:['Acomoda la pechuga y las verduras picadas en una bandeja.','Rocía aceite, sal, pimienta y hierbas.','Hornea a 190°C por 25-30 min hasta que el pollo no quede rosado.'],
+  ing:[{n:'Pechuga de pollo',q:'2',c:6000},{n:'Zucchini o zanahoria',q:'1',c:700},{n:'Pimentón',q:'1/2',c:800},{n:'Cebolla',q:'1/2',c:300},{n:'Aceite de oliva',q:'1 cda',c:400},{n:'Sal, pimienta, hierbas',q:'al gusto',c:100}],
+  steps:['Acomoda la pechuga y las verduras picadas en una bandeja.','Rocía aceite, sal, pimienta y hierbas.','Hornea a 180°C por 25-30 min hasta que el pollo no quede rosado.'],
   tip:'Cena completa y ligera. Corta las verduras de tamaño parejo para que se horneen al tiempo.'},
  {id:'r_tortillaesp',emoji:'🍳',name:'Tortilla de huevo con espinaca',cat:'Cena',serv:2,min:12,dif:1,fav:false,
   ing:[{n:'Huevos',q:'3',c:1500},{n:'Espinaca',q:'1 taza',c:1000},{n:'Cebolla',q:'1/4',c:200},{n:'Aceite',q:'1 cdta',c:150},{n:'Sal',q:'al gusto',c:50}],
@@ -260,7 +290,11 @@ const DEFAULT_RECIPES=[
   steps:['Pica todas las verduras en cubos pequeños.','Hierve en 6 tazas de agua con sal 25 min.','Agrega cilantro al final. Sirve caliente y ligera.'],
   tip:'Cena baja en grasa que cae bien antes de dormir. Evita freír; todo va directo al agua.'},
 
- // ── ONCES (algo ligero, no acompañamiento) ──
+ // ── ONCES ──
+ {id:'r_torta_frutas',emoji:'🍰',name:'Torta de frutas sugerida',cat:'Onces',serv:6,min:45,dif:2,fav:false,bebida:'Té frío',
+  ing:[{n:'Harina de trigo',q:'2 tazas',c:1500},{n:'Azúcar',q:'1 taza',c:800},{n:'Huevos',q:'3',c:1500},{n:'Mantequilla',q:'100 g',c:2000},{n:'Polvo de hornear',q:'1 cdta',c:200},{n:'Fruta (Manzana, fresa o plátano)',q:'1 taza',c:2500}],
+  steps:['Bate la mantequilla con el azúcar hasta que esté cremosa. Añade los huevos uno a uno.','Suma la harina y el polvo de hornear tamizados alternando con la fruta picada (o sin fruta para una torta básica).','Vierte en un molde engrasado y hornea a 180°C por 35 min.'],
+  tip:'Sugerencia: Puedes usar manzana, fresa o plátano maduro; si no tienes fruta, hazla simple e igual quedará deliciosa.'},
  {id:'r_coladaavena',emoji:'🥛',name:'Colada de avena',cat:'Onces',serv:2,min:10,dif:1,fav:false,
   ing:[{n:'Avena en hojuelas',q:'1/2 taza',c:500},{n:'Leche',q:'2 tazas',c:1500},{n:'Panela o azúcar',q:'2 cdas',c:300},{n:'Canela',q:'1 astilla',c:100}],
   steps:['Calienta la leche con la canela a fuego medio.','Agrega la avena y la panela revolviendo.','Cocina 6-8 min hasta espesar a tu gusto. Sirve tibia.'],
@@ -278,15 +312,23 @@ const DEFAULT_RECIPES=[
   steps:['Unta el pan con un poco de mantequilla.','Pon el queso encima.','Tuesta en sartén o tostadora hasta que el queso se derrita.'],
   tip:'Fuego medio-bajo: si está muy alto el pan se quema antes de que derrita el queso.'},
 
- // ── POSTRES (de simple a elaborado) ──
+ // ── POSTRES ──
+ {id:'r_pudin',emoji:'🍮',name:'Pudín casero de vainilla',cat:'Postre',serv:4,min:15,dif:1,fav:false,
+  ing:[{n:'Leche',q:'2 tazas',c:1500},{n:'Fécula de maíz (maicena)',q:'3 cdas',c:400},{n:'Azúcar',q:'4 cdas',c:300},{n:'Esencia de vainilla',q:'1 cdta',c:200}],
+  steps:['Disuelve la fécula de maíz en media taza de leche fría.','Calienta el resto de la leche con el azúcar y la vainilla a fuego medio.','Cuando hierva, añade la mezcla de la fécula y revuelve sin parar durante 3-5 min hasta que espese.','Vierte en recipientes y deja enfriar.'],
+  tip:'Sírvelo frío de nevera. Puedes ponerle galletas trituradas en la base.'},
+ {id:'r_ensalada_frutas',emoji:'🍧',name:'Ensalada de frutas simple',cat:'Postre',serv:2,min:10,dif:1,fav:false,
+  ing:[{n:'Banano',q:'1',c:500},{n:'Papaya picada',q:'1 taza',c:1000},{n:'Manzana',q:'1',c:1500},{n:'Crema de leche (opcional)',q:'4 cdas',c:1000}],
+  steps:['Lava y pela bien las frutas.','Pica todas las frutas en cubos uniformes del mismo tamaño.','Mézclalas suavemente en un recipiente grande y añade crema de leche o leche condensada si gustas.'],
+  tip:'Consúmela de inmediato para evitar que el banano o la manzana se oxiden.'},
+ {id:'r_platano_bocadillo',emoji:'🍌',name:'Plátano con bocadillo y queso',cat:'Postre',serv:2,min:20,dif:1,fav:false,
+  ing:[{n:'Plátano maduro',q:'2',c:1600},{n:'Queso doble crema o lonjas',q:'2 lonjas',c:1500},{n:'Bocadillo de guayaba',q:'2 trozos',c:800}],
+  steps:['Haz un corte longitudinal a lo largo del plátano (con cáscara o pelado).','Rellena la ranura generosamente con láminas de bocadillo y queso.','Hornea a 180°C por 15-20 min o cocínalo tapado en una sartén a fuego muy bajo hasta que el plátano ablande y el queso se funda.'],
+  tip:'Usa plátano bien maduro (con manchas negras en la cáscara) porque es mucho más dulce.'},
  {id:'r_gelatina',emoji:'🍧',name:'Gelatina',cat:'Postre',serv:4,min:10,dif:1,fav:false,
   ing:[{n:'Gelatina en polvo',q:'1 sobre',c:2000},{n:'Agua caliente',q:'1 taza',c:0},{n:'Agua fría',q:'1 taza',c:0}],
   steps:['Disuelve la gelatina en el agua caliente revolviendo bien.','Agrega el agua fría y mezcla.','Lleva a la nevera 3-4 horas hasta cuajar.'],
   tip:'Que el agua caliente disuelva TODO el polvo o quedan grumos. Para que cuaje más rápido usa menos agua fría con hielo.'},
- {id:'r_platanohorno',emoji:'🍌',name:'Plátano maduro al horno',cat:'Postre',serv:2,min:20,dif:1,fav:false,
-  ing:[{n:'Plátano maduro',q:'2',c:1600},{n:'Queso',q:'2 lonjas',c:1500},{n:'Bocadillo',q:'2 trozos',c:800}],
-  steps:['Haz un corte a lo largo al plátano (con cáscara).','Rellena con bocadillo y queso.','Hornea a 180°C por 15 min hasta que el queso derrita y el plátano esté blando.'],
-  tip:'Usa plátano BIEN maduro (cáscara negra): es dulce y se hornea suave.'},
  {id:'r_arrozleche',emoji:'🍚',name:'Arroz con leche',cat:'Postre',serv:4,min:35,dif:2,fav:false,
   ing:[{n:'Arroz',q:'1 taza',c:800},{n:'Leche',q:'3 tazas',c:2250},{n:'Azúcar',q:'1/2 taza',c:500},{n:'Canela',q:'1 astilla',c:100},{n:'Pasas',q:'opcional',c:500}],
   steps:['Cocina el arroz en agua 10 min hasta medio blando; escurre.','Agrega la leche, el azúcar y la canela; cocina a fuego BAJO revolviendo 20 min.','Cuando esté cremoso retira; espesa más al enfriar.'],
@@ -320,7 +362,8 @@ function closeOv(id){document.getElementById(id).classList.remove('open');}
 let _ccb=null;
 function showConfirm(t,s,cb){document.getElementById('cf-t').textContent=t;document.getElementById('cf-s').textContent=s;_ccb=cb;document.getElementById('cf-ok').onclick=()=>{closeOv('ov-confirm');if(_ccb)_ccb();};openOv('ov-confirm');}
 
-function brandHdr(){return `<div class="brand"><span class="brand-logo">🍲</span><span class="brand-name">Olla</span><span class="brand-tag">· recetas simples</span></div>`;}
+/* Header con icono de olla de vuelta y libro a la derecha */
+function brandHdr(){return `<div class="brand"><div class="brand-wrapper"><span class="brand-logo">🍲</span><span class="brand-name">Olla</span><span class="brand-tag">· arma tu recetario perfecto</span></div><span class="brand-book">📖</span></div>`;}
 
 function renderAll(){
   ['recetas','cocinar','mercado','mas'].forEach(s=>{const el=document.getElementById('nav-'+s);if(el)el.classList.toggle('on',curScreen===s);});
@@ -333,12 +376,16 @@ function renderAll(){
   else rMas(app);
 }
 
-// ── RECETAS ───────────────────────────────────────────────
+// ── RECETAS (Con bloque intro integrado y botón favoritas compacto) ──────────────────
 function rRecetas(app){
   const recipes=gR();
-  const intro=localStorage.getItem(PFX+'introHidden')?'':`<div class="intro"><button class="x" onclick="localStorage.setItem('${PFX}introHidden','1');renderAll()">✕</button><h3>🍲 Tu recetario casero</h3><p>Comida simple y económica para el día a día. Mira cuánto cuesta cada receta, arma tu mercado y descubre qué cocinar con lo que ya tienes. Toca + para agregar las tuyas.</p></div>`;
-  const chips=`<div class="chips"><button class="chip ${!filterCat&&!filterFav?'on':''}" onclick="filterCat='';filterFav=false;renderAll()">Todas</button><button class="chip ${filterFav?'on':''}" onclick="filterFav=!filterFav;renderAll()">⭐ Favoritas</button>`+
+  /* Bloque intro movido aquí con el nuevo texto descriptivo unificado */
+  const intro=localStorage.getItem(PFX+'introHidden')?'':`<div class="intro"><button class="x" onclick="localStorage.setItem('${PFX}introHidden','1');renderAll()">✕</button><h3>🍲 Tu recetario casero</h3><p>Olla es tu recetario de comida casera, simple y económica: recetas precargadas, costos por porción, lista de mercado y "qué cocino con lo que tengo".</p></div>`;
+  
+  /* Botón Favoritas ahora es solo la estrella */
+  const chips=`<div class="chips"><button class="chip ${!filterCat&&!filterFav?'on':''}" onclick="filterCat='';filterFav=false;renderAll()">Todas</button><button class="chip ${filterFav?'on':''}" onclick="filterFav=!filterFav;renderAll()">⭐</button>`+
     CATS.map(c=>`<button class="chip ${filterCat===c.k?'on':''}" onclick="filterCat=filterCat==='${c.k}'?'':'${c.k}';filterFav=false;renderAll()">${c.time} ${c.k}</button>`).join('')+`</div>`;
+    
   app.innerHTML=`<div class="hdr">${brandHdr()}<div class="search">🔎<input type="text" id="srch" placeholder="Buscar receta o ingrediente..." value="${esc(searchTxt)}"></div></div>${chips}<div class="content">${intro}<div id="cards"></div></div>`;
   renderCards();
   const fab=document.createElement('button');fab.className='fab';fab.id='fab';fab.textContent='＋';fab.onclick=()=>openEdit(null);document.body.appendChild(fab);
@@ -469,30 +516,53 @@ function rCocinar(app){
 function togglePantry(n){const a=gPantry();const i=a.findIndex(x=>x.toLowerCase()===n.toLowerCase());if(i>=0)a.splice(i,1);else a.push(n);sPantry(a);renderAll();}
 function clearPantry(){showConfirm('¿Limpiar cocina?','Se desmarcan todos los ingredientes.',()=>{sPantry([]);renderAll();});}
 
-// ── MERCADO ───────────────────────────────────────────────
+// ── MERCADO ───────────────────────────────────────────────────────────────────────
 function rMercado(app){
   const recipes=gR();
-  const rows=recipes.map(r=>{const on=selRecipes.has(r.id);return `<div class="mrow ${on?'sel':''}" onclick="toggleSel('${r.id}')"><div class="selbox">${on?'✓':''}</div><div class="mrow-em">${r.emoji}</div><div class="mrow-bd"><div class="mrow-nm">${esc(r.name)}</div><div class="mrow-sub">${timeIco(r.cat)} ${esc(r.cat)} · ${fmt(recipeCost(r))} · ${r.serv} porc.</div></div></div>`;}).join('');
-  let listHtml='',total=0;
+  let total=0;
+  
   if(selRecipes.size){
-    const agg={};
-    recipes.filter(r=>selRecipes.has(r.id)).forEach(r=>(r.ing||[]).forEach(i=>{const k=i.n.toLowerCase();if(!agg[k])agg[k]={n:i.n,qs:[],c:0};if(i.q)agg[k].qs.push(i.q);agg[k].c+=(+i.c||0);total+=(+i.c||0);}));
-    const items=Object.values(agg).sort((a,b)=>a.n.localeCompare(b.n,'es'));
-    listHtml=`<div class="shdr"><span class="sttl">🛒 Tu lista (${items.length} ingredientes)</span></div><div class="card" style="padding:6px 14px">`+items.map(it=>`<div class="ing-row"><span class="ing-n">${esc(it.n)}</span><span class="ing-q">${esc(it.qs.join(' + '))}</span><span class="ing-c">${it.c?fmt(it.c):'—'}</span></div>`).join('')+`</div>`;
+    recipes.filter(r=>selRecipes.has(r.id)).forEach(r=>(r.ing||[]).forEach(i=>{total+=(+i.c||0);}));
   }
-  app.innerHTML=`<div class="hdr">${brandHdr()}<div class="scr-ttl">🛒 Mercado</div><div class="scr-sub">Elige recetas y arma tu lista de compras</div></div>
-    <div class="content">${listHtml}<div class="shdr"><span class="sttl">Elegir recetas</span>${selRecipes.size?'<button class="chip" onclick="clearSel()">Limpiar</button>':''}</div>${rows}
-    ${selRecipes.size?`<div class="totbar"><div style="flex:1"><div class="tl">Costo estimado total (${selRecipes.size} recetas)</div><div class="tv">${fmt(total)}</div></div></div>`:''}</div>`;
+
+  const rows=recipes.map(r=>{
+    const on=selRecipes.has(r.id);
+    let desgloseHtml = '';
+    
+    if(on){
+      const ingsList = (r.ing||[]).map(i=>`<div class="ing-row"><span class="ing-n">${esc(i.n)}</span><span class="ing-q">${esc(i.q)}</span><span class="ing-c">${i.c?fmt(i.c):'—'}</span></div>`).join('');
+      desgloseHtml = `<div class="m-desglose">${ingsList || '<div class="ing-row">Sin ingredientes</div>'}</div>`;
+    }
+
+    return `
+      <div class="mrow-container">
+        <div class="mrow ${on?'sel':''}" onclick="toggleSel('${r.id}')">
+          <div class="selbox">${on?'✓':''}</div>
+          <div class="mrow-em">${r.emoji}</div>
+          <div class="mrow-bd">
+            <div class="mrow-nm">${esc(r.name)}</div>
+            <div class="mrow-sub">${timeIco(r.cat)} ${esc(r.cat)} · ${fmt(recipeCost(r))} · ${r.serv} porc.</div>
+          </div>
+        </div>
+        ${desgloseHtml}
+      </div>`;
+  }).join('');
+
+  app.innerHTML=`<div class="hdr">${brandHdr()}<div class="scr-ttl">🛒 Mercado</div><div class="scr-sub">Elige recetas y mira sus ingredientes desglosados al instante</div></div>
+    <div class="content">
+      <div class="shdr"><span class="sttl">Elegir recetas</span>${selRecipes.size?'<button class="chip" onclick="clearSel()">Limpiar</button>':''}</div>
+      ${rows}
+      ${selRecipes.size?`<div class="totbar"><div style="flex:1"><div class="tl">Costo estimado total (${selRecipes.size} recetas)</div><div class="tv">${fmt(total)}</div></div></div>`:''}
+    </div>`;
 }
 function toggleSel(id){if(selRecipes.has(id))selRecipes.delete(id);else selRecipes.add(id);renderAll();}
 function clearSel(){selRecipes.clear();renderAll();}
 
-// ── MÁS ───────────────────────────────────────────────────
+// ── MÁS (Texto descriptivo removido de aquí) ──────────────────────────────────────
 function rMas(app){
   const driveId=getDriveClientId();const driveOk=isDriveConnected();
   app.innerHTML=`<div class="hdr">${brandHdr()}<div class="scr-ttl">⚙️ Más</div><div class="scr-sub">Respaldo y datos</div></div>
   <div class="content">
-    <div class="tip">🍲 <b>Olla</b> es tu recetario de comida casera, simple y económica: recetas precargadas, costos por porción, lista de mercado y "qué cocino con lo que tengo".</div>
     <div class="shdr"><span class="sttl">Respaldo</span></div>
     <div class="set-row" onclick="exportJSON()"><div class="set-ico">📦</div><div class="set-inf"><div class="set-ttl">Exportar respaldo</div><div class="set-sub">Descarga tus recetas en un archivo JSON.</div></div><span class="set-arr">↓</span></div>
     <div class="set-row" onclick="document.getElementById('imp-file').click()"><div class="set-ico">📥</div><div class="set-inf"><div class="set-ttl">Importar respaldo</div><div class="set-sub">Restaura desde un archivo JSON.</div></div><span class="set-arr">›</span></div>
@@ -503,7 +573,7 @@ function rMas(app){
     <div class="shdr"><span class="sttl">Recetas</span></div>
     <div class="set-row" onclick="resetRecipes()"><div class="set-ico">↺</div><div class="set-inf"><div class="set-ttl">Restaurar recetas de ejemplo</div><div class="set-sub">Recarga el recetario inicial. Tus recetas creadas (con +) se conservan.</div></div><span class="set-arr">›</span></div>
     <div class="shdr"><span class="sttl">Info</span></div>
-    <div class="set-row" style="cursor:default"><div class="set-ico">🍲</div><div class="set-inf"><div class="set-ttl">Olla v2</div><div class="set-sub">Recetas simples y económicas. Datos en tu dispositivo.</div><div class="set-sub" style="margin-top:3px">Hecho por <b>Mauricio Vergara</b> · Bogotá–COL</div></div></div>
+    <div class="set-row" style="cursor:default"><div class="set-ico">🍲</div><div class="set-inf"><div class="set-ttl">Olla v2</div><div class="set-sub">Datos en tu dispositivo.</div><div class="set-sub" style="margin-top:3px">Hecho por <b>Mauricio Vergara</b> · Bogotá–COL</div></div></div>
     <div class="set-row" onclick="window.open('https://github.com/omvergara/olla/issues','_blank')"><div class="set-ico">💬</div><div class="set-inf"><div class="set-ttl">Reportar un problema</div><div class="set-sub">Issues del repo en GitHub.</div></div><span class="set-arr">›</span></div>
   </div>`;
 }
@@ -527,6 +597,21 @@ function startDriveRestore(){const cid=getDriveClientId();if(!cid){alert('Conect
 async function doRestoreFromDrive(){try{let fid=driveFileId;if(!fid){const q=encodeURIComponent("name='olla_backup.json' and trashed=false");const list=await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=${encodeURIComponent('files(id,modifiedTime)')}&orderBy=${encodeURIComponent('modifiedTime desc')}`,{headers:{'Authorization':'Bearer '+driveToken}}).then(r=>r.json());if(list.files&&list.files.length){fid=list.files[0].id;driveFileId=fid;localStorage.setItem(PFX+'drive_fid',fid);}}if(!fid){alert('No se encontró respaldo en tu Drive.');return;}const content=await fetch(`https://www.googleapis.com/drive/v3/files/${fid}?alt=media`,{headers:{'Authorization':'Bearer '+driveToken}}).then(r=>r.json());const n=applyBackupObject(content);if(!n){alert('El respaldo está vacío.');return;}alert('✅ Restaurados '+n+' datos. La app se recargará.');location.reload();}catch(e){alert('Error al restaurar. Revisa tu conexión.');console.log('restore err',e);}}
 function restoreFromDrive(){if(!getDriveClientId()){alert('Conecta Google Drive primero.');return;}showConfirm('¿Restaurar desde Drive?','Se reemplazan tus datos con el último respaldo en la nube.',startDriveRestore);}
 
+// ── Migración: inyecta recetas de ejemplo nuevas sin tocar las del usuario ──
+// Subir SEED_V cada vez que se agreguen recetas nuevas a DEFAULT_RECIPES.
+const SEED_V=2;
+function migrateRecipes(){
+  const raw=localStorage.getItem(PFX+'recipes');
+  if(raw===null)return; // instalación nueva: gR() ya devuelve todas las recetas
+  if(+(localStorage.getItem(PFX+'seed_v')||0)>=SEED_V)return; // ya migrado
+  let cur;try{cur=JSON.parse(raw);}catch(e){return;}
+  if(!Array.isArray(cur)){localStorage.setItem(PFX+'seed_v',String(SEED_V));return;}
+  const have=new Set(cur.map(r=>r.id));
+  const missing=DEFAULT_RECIPES.filter(d=>!have.has(d.id)).map(cloneR);
+  if(missing.length)sR([...cur,...missing]);
+  localStorage.setItem(PFX+'seed_v',String(SEED_V));
+}
+migrateRecipes();
 renderAll();
 </script>
 </body>
